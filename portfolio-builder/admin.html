@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Builder</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f2f5; color: #1a1a2e; line-height: 1.6; }
+
+    .app-header { background: #1a1a2e; color: #fff; padding: 20px 32px; display: flex; align-items: center; gap: 12px; }
+    .app-header h1 { font-size: 1.3rem; font-weight: 600; }
+    .app-header span { color: #e94560; }
+
+    .container { max-width: 900px; margin: 32px auto; padding: 0 20px 60px; }
+
+    .card { background: #fff; border-radius: 12px; padding: 28px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .card h2 { font-size: 1.1rem; color: #1a1a2e; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #eef2ff; }
+
+    label { display: block; font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 6px; margin-top: 14px; }
+    label:first-child { margin-top: 0; }
+
+    input[type="text"], input[type="email"], input[type="url"], textarea, select {
+      width: 100%; padding: 10px 14px; border: 1.5px solid #ddd; border-radius: 8px;
+      font-size: 0.9rem; font-family: inherit; transition: border 0.2s;
+    }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: #e94560; }
+    textarea { resize: vertical; min-height: 80px; }
+
+    .file-input { margin-top: 6px; }
+    .file-input input[type="file"] { font-size: 0.85rem; }
+
+    .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+    .btn-accent { background: #e94560; color: #fff; }
+    .btn-accent:hover { background: #ff6b81; transform: translateY(-1px); }
+    .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
+    .btn-outline-sm { background: none; border: 1.5px solid #ddd; color: #555; padding: 6px 14px; font-size: 0.8rem; border-radius: 6px; cursor: pointer; }
+    .btn-outline-sm:hover { border-color: #e94560; color: #e94560; }
+    .btn-danger { background: #fee2e2; color: #dc2626; border: none; }
+    .btn-danger:hover { background: #fecaca; }
+
+    .btn-generate { width: 100%; padding: 16px; font-size: 1.1rem; margin-top: 12px; }
+
+    /* Theme picker */
+    .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .theme-card {
+      border: 2.5px solid #e5e7eb; border-radius: 10px; padding: 14px; cursor: pointer;
+      transition: all 0.2s; text-align: center;
+    }
+    .theme-card:hover { border-color: #999; }
+    .theme-card.selected { border-color: #e94560; background: #fef2f2; }
+    .theme-card .swatch { display: flex; gap: 4px; justify-content: center; margin-bottom: 8px; }
+    .theme-card .swatch span { width: 20px; height: 20px; border-radius: 50%; }
+    .theme-card .theme-name { font-size: 0.78rem; font-weight: 600; color: #555; }
+
+    /* Dynamic lists */
+    .list-item { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 16px; margin-bottom: 10px; position: relative; }
+    .list-item .remove-btn { position: absolute; top: 8px; right: 8px; }
+    .add-btn { margin-top: 10px; }
+
+    .row { display: flex; gap: 12px; }
+    .row > * { flex: 1; }
+
+    /* Project card in form */
+    .project-item { background: #fafbfc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+    .project-item h3 { font-size: 0.95rem; color: #1a1a2e; margin-bottom: 12px; }
+    .project-images { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .project-images .img-slot { width: 80px; height: 60px; border: 2px dashed #ccc; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #999; cursor: pointer; overflow: hidden; position: relative; }
+    .project-images .img-slot img { width: 100%; height: 100%; object-fit: cover; }
+    .project-images .img-slot input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+
+    .featured-toggle { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+    .featured-toggle input { width: auto; }
+
+    .loading { display: none; text-align: center; padding: 40px; }
+    .loading.show { display: block; }
+    .spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid #eee; border-top-color: #e94560; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 600px) {
+      .theme-grid { grid-template-columns: repeat(2, 1fr); }
+      .row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <h1><span>&#9632;</span> Portfolio Builder</h1>
+  </header>
+
+  <div class="container">
+
+    <!-- Basic Info -->
+    <div class="card">
+      <h2>Client Information</h2>
+      <label>Full Name (displayed as title)</label>
+      <input type="text" id="name" placeholder="JANE DOE" value="">
+      <label>Tagline / Role</label>
+      <input type="text" id="tagline" placeholder="Full-Stack Developer | UI Designer | Freelancer">
+      <label>Profile Photo</label>
+      <div class="file-input"><input type="file" id="profilePhoto" accept="image/*"></div>
+    </div>
+
+    <!-- Theme -->
+    <div class="card">
+      <h2>Choose Theme</h2>
+      <div class="theme-grid" id="themeGrid"></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="card">
+      <h2>Stats (shown in hero)</h2>
+      <div id="statsList"></div>
+      <button class="btn btn-outline-sm add-btn" onclick="addStat()">+ Add Stat</button>
+    </div>
+
+    <!-- Buttons -->
+    <div class="card">
+      <h2>Contact Buttons</h2>
+      <div id="buttonsList"></div>
+      <button class="btn btn-outline-sm add-btn" onclick="addButton()">+ Add Button</button>
+    </div>
+
+    <!-- Hero Backgrounds -->
+    <div class="card">
+      <h2>Hero Background Photos</h2>
+      <p style="font-size:0.85rem;color:#777;margin-bottom:12px;">Upload landscape photos for the Ken Burns slideshow behind the name.</p>
+      <div id="heroBgList"></div>
+      <button class="btn btn-outline-sm add-btn" onclick="addHeroBg()">+ Add Background</button>
+    </div>
+
+    <!-- Projects -->
+    <div class="card">
+      <h2>Portfolio Projects</h2>
+      <div id="projectsList"></div>
+      <button class="btn btn-outline-sm add-btn" onclick="addProject()">+ Add Project</button>
+    </div>
+
+    <!-- Skills -->
+    <div class="card">
+      <h2>Skills & Tools</h2>
+      <div id="skillsList"></div>
+      <button class="btn btn-outline-sm add-btn" onclick="addSkillCategory()">+ Add Category</button>
+    </div>
+
+    <!-- CTA -->
+    <div class="card">
+      <h2>Call to Action (bottom section)</h2>
+      <label>Heading</label>
+      <input type="text" id="ctaHeading" placeholder="Let's Work Together" value="Let's Work Together">
+      <label>Description</label>
+      <input type="text" id="ctaText" placeholder="Have a project in mind? Let's discuss.">
+      <label>Button Text</label>
+      <input type="text" id="ctaBtnLabel" placeholder="View Full Profile" value="View Full Profile">
+      <label>Button URL</label>
+      <input type="url" id="ctaBtnUrl" placeholder="https://linkedin.com/in/...">
+    </div>
+
+    <!-- Resume -->
+    <div class="card">
+      <h2>Resume / CV</h2>
+      <p style="font-size:0.85rem;color:#777;margin-bottom:12px;">Upload a PDF to include a "Download CV" button.</p>
+      <div class="file-input"><input type="file" id="resume" accept=".pdf"></div>
+    </div>
+
+    <!-- Generate -->
+    <div class="card" style="text-align:center;">
+      <button class="btn btn-accent btn-generate" onclick="generate()">
+        🚀 Generate Portfolio & Download ZIP
+      </button>
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p style="margin-top:12px;color:#666;">Generating your portfolio...</p>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  let selectedTheme = 'dark-professional';
+  let projectCount = 0;
+
+  // Load themes
+  fetch('/api/themes').then(r => r.json()).then(themes => {
+    const grid = document.getElementById('themeGrid');
+    themes.forEach(t => {
+      const card = document.createElement('div');
+      card.className = 'theme-card' + (t.id === selectedTheme ? ' selected' : '');
+      card.onclick = () => {
+        document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedTheme = t.id;
+      };
+      card.innerHTML = `
+        <div class="swatch">
+          <span style="background:${t.primary}"></span>
+          <span style="background:${t.accent}"></span>
+          <span style="background:${t.accentLight}"></span>
+          <span style="background:${t.bg};border:1px solid #ddd"></span>
+        </div>
+        <div class="theme-name">${t.name}</div>
+      `;
+      grid.appendChild(card);
+    });
+  });
+
+  // --- Stats ---
+  function addStat(value = '', label = '') {
+    const list = document.getElementById('statsList');
+    const div = document.createElement('div');
+    div.className = 'list-item';
+    div.innerHTML = `
+      <button class="btn btn-danger btn-sm remove-btn" onclick="this.parentElement.remove()">Remove</button>
+      <div class="row">
+        <div><label>Value</label><input type="text" class="stat-value" placeholder="5+" value="${value}"></div>
+        <div><label>Label</label><input type="text" class="stat-label" placeholder="Years Experience" value="${label}"></div>
+      </div>
+    `;
+    list.appendChild(div);
+  }
+  addStat('5+', 'Years Experience');
+
+  // --- Buttons ---
+  function addButton(label = '', url = '', style = 'primary', isDownload = false, emoji = '') {
+    const list = document.getElementById('buttonsList');
+    const div = document.createElement('div');
+    div.className = 'list-item';
+    div.innerHTML = `
+      <button class="btn btn-danger btn-sm remove-btn" onclick="this.parentElement.remove()">Remove</button>
+      <div class="row">
+        <div><label>Label</label><input type="text" class="btn-label" placeholder="Hire Me" value="${label}"></div>
+        <div><label>URL / Email</label><input type="text" class="btn-url" placeholder="https://... or mailto:..." value="${url}"></div>
+      </div>
+      <div class="row" style="margin-top:8px;">
+        <div><label>Style</label>
+          <select class="btn-style"><option value="primary" ${style==='primary'?'selected':''}>Primary (colored)</option><option value="outline" ${style==='outline'?'selected':''}>Outline</option></select>
+        </div>
+        <div><label>Emoji (optional)</label><input type="text" class="btn-emoji" placeholder="📄" value="${emoji}" style="width:60px;"></div>
+      </div>
+    `;
+    list.appendChild(div);
+  }
+  addButton('Hire Me', '', 'primary');
+  addButton('Get in Touch', 'mailto:', 'outline');
+
+  // --- Hero Backgrounds ---
+  function addHeroBg() {
+    const list = document.getElementById('heroBgList');
+    const div = document.createElement('div');
+    div.className = 'list-item';
+    div.innerHTML = `
+      <button class="btn btn-danger btn-sm remove-btn" onclick="this.parentElement.remove()">Remove</button>
+      <div class="file-input"><input type="file" class="hero-bg-file" accept="image/*"></div>
+    `;
+    list.appendChild(div);
+  }
+  addHeroBg();
+
+  // --- Projects ---
+  function addProject() {
+    const idx = projectCount++;
+    const list = document.getElementById('projectsList');
+    const div = document.createElement('div');
+    div.className = 'project-item';
+    div.dataset.projectIdx = idx;
+    div.innerHTML = `
+      <button class="btn btn-danger btn-sm remove-btn" onclick="this.parentElement.remove()" style="float:right;">Remove Project</button>
+      <h3>Project ${idx + 1}</h3>
+      <label>Title</label>
+      <input type="text" class="proj-title" placeholder="Project Name">
+      <label>Role</label>
+      <input type="text" class="proj-role" placeholder="Lead Developer">
+      <label>Description</label>
+      <textarea class="proj-desc" placeholder="What you did, tools used, results achieved..."></textarea>
+      <div class="featured-toggle">
+        <input type="checkbox" class="proj-featured" id="feat_${idx}">
+        <label for="feat_${idx}" style="margin:0;cursor:pointer;">Featured (full-width card)</label>
+      </div>
+      <label>Skills / Tags</label>
+      <input type="text" class="proj-skills" placeholder="React, Node.js, PostgreSQL (comma separated)">
+      <label>Date</label>
+      <input type="text" class="proj-date" placeholder="Published Mar 2026">
+      <label>Project Images</label>
+      <div class="project-images" data-project="${idx}">
+        <div class="img-slot" onclick="this.querySelector('input').click()">
+          +
+          <input type="file" accept="image/*" onchange="previewImg(this)">
+        </div>
+      </div>
+      <button class="btn btn-outline-sm" style="margin-top:8px;" onclick="addImgSlot(${idx})">+ Add Image</button>
+    `;
+    list.appendChild(div);
+  }
+  addProject();
+
+  function addImgSlot(projectIdx) {
+    const container = document.querySelector(`.project-images[data-project="${projectIdx}"]`);
+    const slot = document.createElement('div');
+    slot.className = 'img-slot';
+    slot.onclick = function() { this.querySelector('input').click(); };
+    slot.innerHTML = `+<input type="file" accept="image/*" onchange="previewImg(this)">`;
+    container.appendChild(slot);
+  }
+
+  function previewImg(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const slot = input.closest('.img-slot');
+        slot.innerHTML = `<img src="${e.target.result}"><input type="file" accept="image/*" onchange="previewImg(this)" style="position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;">`;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  // --- Skills ---
+  function addSkillCategory(name = '', items = '') {
+    const list = document.getElementById('skillsList');
+    const div = document.createElement('div');
+    div.className = 'list-item';
+    div.innerHTML = `
+      <button class="btn btn-danger btn-sm remove-btn" onclick="this.parentElement.remove()">Remove</button>
+      <label>Category Name</label>
+      <input type="text" class="skill-cat-name" placeholder="Frontend" value="${name}">
+      <label>Items (comma separated)</label>
+      <input type="text" class="skill-cat-items" placeholder="React, Vue.js, TypeScript" value="${items}">
+    `;
+    list.appendChild(div);
+  }
+  addSkillCategory();
+
+  // --- Generate ---
+  async function generate() {
+    const loading = document.getElementById('loading');
+    loading.classList.add('show');
+
+    const formData = new FormData();
+
+    // Build config object
+    const config = {
+      name: document.getElementById('name').value || 'PORTFOLIO',
+      tagline: document.getElementById('tagline').value || '',
+      theme: selectedTheme,
+      stats: [],
+      buttons: [],
+      heroBackgrounds: [],
+      projects: [],
+      skills: [],
+      cta: null,
+      footer: document.getElementById('name').value || 'PORTFOLIO',
+    };
+
+    // Stats
+    document.querySelectorAll('#statsList .list-item').forEach(item => {
+      const value = item.querySelector('.stat-value').value;
+      const label = item.querySelector('.stat-label').value;
+      if (value && label) config.stats.push({ value, label });
+    });
+
+    // Buttons
+    document.querySelectorAll('#buttonsList .list-item').forEach(item => {
+      const label = item.querySelector('.btn-label').value;
+      const url = item.querySelector('.btn-url').value;
+      const style = item.querySelector('.btn-style').value;
+      const emoji = item.querySelector('.btn-emoji').value;
+      if (label) {
+        const btn = { label, url: url || '#', style };
+        if (emoji) btn.emoji = emoji;
+        if (url && !url.startsWith('http') && !url.startsWith('mailto')) {
+          // probably a relative path
+        } else if (url.startsWith('http')) {
+          btn.target = '_blank';
+        }
+        config.buttons.push(btn);
+      }
+    });
+
+    // Check resume
+    const resumeFile = document.getElementById('resume').files[0];
+    if (resumeFile) {
+      formData.append('resume', resumeFile);
+      config.buttons.push({
+        label: 'Download CV',
+        url: 'assets/resume.pdf',
+        style: 'outline',
+        download: true,
+        emoji: '\ud83d\udcc4'
+      });
+    }
+
+    // Profile photo
+    const profileFile = document.getElementById('profilePhoto').files[0];
+    if (profileFile) {
+      formData.append('profilePhoto', profileFile);
+      config.profilePhoto = 'images/profile.jpg'; // placeholder, server will fix
+    }
+
+    // Hero backgrounds
+    const heroBgItems = document.querySelectorAll('#heroBgList .list-item');
+    heroBgItems.forEach((item, i) => {
+      const file = item.querySelector('.hero-bg-file').files[0];
+      if (file) {
+        formData.append(`heroBg_${i}`, file);
+        config.heroBackgrounds.push(`images/covers/cover-${i}.jpg`);
+      }
+    });
+
+    // Projects
+    const projectItems = document.querySelectorAll('.project-item');
+    projectItems.forEach((item, pi) => {
+      const title = item.querySelector('.proj-title').value;
+      if (!title) return;
+
+      const project = {
+        title,
+        role: item.querySelector('.proj-role').value || '',
+        description: item.querySelector('.proj-desc').value || '',
+        featured: item.querySelector('.proj-featured').checked,
+        skills: item.querySelector('.proj-skills').value.split(',').map(s => s.trim()).filter(Boolean),
+        date: item.querySelector('.proj-date').value || '',
+        images: [],
+      };
+
+      const imgSlots = item.querySelectorAll('.img-slot input[type="file"]');
+      imgSlots.forEach((input, ii) => {
+        if (input.files && input.files[0]) {
+          formData.append(`project_${pi}_img_${ii}`, input.files[0]);
+          project.images.push({ src: `images/projects/p${pi}-${ii}.jpg`, alt: title });
+        }
+      });
+
+      config.projects.push(project);
+    });
+
+    // Skills
+    document.querySelectorAll('#skillsList .list-item').forEach(item => {
+      const name = item.querySelector('.skill-cat-name').value;
+      const items = item.querySelector('.skill-cat-items').value.split(',').map(s => s.trim()).filter(Boolean);
+      if (name && items.length > 0) config.skills.push({ name, items });
+    });
+
+    // CTA
+    const ctaHeading = document.getElementById('ctaHeading').value;
+    if (ctaHeading) {
+      config.cta = {
+        heading: ctaHeading,
+        text: document.getElementById('ctaText').value || '',
+        buttonLabel: document.getElementById('ctaBtnLabel').value || 'Get in Touch',
+        buttonUrl: document.getElementById('ctaBtnUrl').value || '#',
+      };
+    }
+
+    // Append config as JSON
+    formData.append('config', JSON.stringify(config));
+
+    try {
+      const response = await fetch('/api/generate', { method: 'POST', body: formData });
+
+      if (!response.ok) {
+        const err = await response.json();
+        alert('Error: ' + err.error);
+        loading.classList.remove('show');
+        return;
+      }
+
+      // Download ZIP
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${config.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-portfolio.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      loading.classList.remove('show');
+      alert('Portfolio generated! Check your Downloads folder.\n\nTo deploy:\n1. Unzip the file\n2. Go to https://app.netlify.com/drop\n3. Drag the "site" folder there\n4. Done! You\'ll get a live link.');
+
+    } catch (err) {
+      alert('Error generating portfolio: ' + err.message);
+      loading.classList.remove('show');
+    }
+  }
+</script>
+
+</body>
+</html>

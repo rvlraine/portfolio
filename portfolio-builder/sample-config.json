@@ -1,0 +1,93 @@
+{
+  "name": "JANE DOE",
+  "tagline": "Full-Stack Developer | UI Designer | Freelancer",
+  "profilePhoto": "images/profile.jpg",
+  "theme": "ocean-blue",
+
+  "stats": [
+    { "value": "8+", "label": "Years Experience" },
+    { "value": "120+", "label": "Projects Delivered" },
+    { "value": "15+", "label": "Technologies" }
+  ],
+
+  "buttons": [
+    { "label": "Hire Me", "url": "https://www.upwork.com/freelancers/janedoe", "style": "primary", "target": "_blank" },
+    { "label": "Download CV", "url": "assets/resume.pdf", "style": "outline", "download": true, "emoji": "\ud83d\udcc4" },
+    { "label": "Get in Touch", "url": "mailto:jane@example.com", "style": "outline" }
+  ],
+
+  "heroBackgrounds": [
+    "images/covers/bg-1.jpg",
+    "images/covers/bg-2.jpg"
+  ],
+
+  "portfolioTitle": "My Work",
+  "portfolioSubtitle": "A selection of projects I'm proud of",
+
+  "projects": [
+    {
+      "title": "E-Commerce Platform Redesign",
+      "role": "Lead Developer",
+      "description": "Rebuilt a legacy e-commerce platform using React and Node.js, improving page load times by 60% and increasing conversion rates by 25%. Implemented real-time inventory management and a custom checkout flow.",
+      "featured": true,
+      "images": [
+        { "src": "images/project1/dashboard.png", "alt": "Dashboard overview" },
+        { "src": "images/project1/mobile.png", "alt": "Mobile responsive view" },
+        { "src": "images/project1/checkout.png", "alt": "Checkout flow" }
+      ],
+      "skills": ["React", "Node.js", "PostgreSQL", "Stripe API"],
+      "date": "Published Feb 2026"
+    },
+    {
+      "title": "Task Management App",
+      "role": "Full-Stack Developer",
+      "description": "Built a collaborative task management application with real-time updates, drag-and-drop kanban boards, and team analytics dashboard.",
+      "featured": false,
+      "images": [
+        { "src": "images/project2/kanban.png", "alt": "Kanban board" },
+        { "src": "images/project2/analytics.png", "alt": "Analytics dashboard" }
+      ],
+      "skills": ["Vue.js", "Firebase", "Tailwind CSS"],
+      "date": "Published Jan 2026"
+    },
+    {
+      "title": "Portfolio Template System",
+      "role": "Designer & Developer",
+      "description": "Created a configurable portfolio generator that produces beautiful, responsive single-page sites from a simple JSON config file. Supports 6 professional themes.",
+      "featured": false,
+      "images": [
+        { "src": "images/project3/themes.png", "alt": "Theme showcase" }
+      ],
+      "skills": ["Node.js", "HTML/CSS", "JavaScript"],
+      "date": "Published Mar 2026"
+    }
+  ],
+
+  "skills": [
+    {
+      "name": "Frontend",
+      "items": ["React", "Vue.js", "TypeScript", "Tailwind CSS"]
+    },
+    {
+      "name": "Backend",
+      "items": ["Node.js", "Python", "PostgreSQL", "Redis"]
+    },
+    {
+      "name": "DevOps",
+      "items": ["Docker", "AWS", "CI/CD", "GitHub Actions"]
+    },
+    {
+      "name": "Design",
+      "items": ["Figma", "Adobe XD", "UI/UX Design", "Prototyping"]
+    }
+  ],
+
+  "cta": {
+    "heading": "Let's Build Something Great",
+    "text": "Have a project in mind? I'd love to hear about it and discuss how I can help bring your vision to life.",
+    "buttonLabel": "View Full Profile",
+    "buttonUrl": "https://www.linkedin.com/in/janedoe"
+  },
+
+  "footer": "JANE DOE"
+}

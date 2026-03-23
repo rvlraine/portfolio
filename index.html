@@ -257,6 +257,11 @@
 
     .card-gallery:hover .gallery-nav { opacity: 1; }
 
+    @media (max-width: 768px) {
+      .gallery-nav { opacity: 0.7 !important; width: 28px; height: 28px; font-size: 0.9rem; }
+      .lightbox-nav { opacity: 0.8 !important; }
+    }
+
     .gallery-prev { left: 8px; }
     .gallery-next { right: 8px; }
 
@@ -931,6 +936,42 @@
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); navLightbox(1); }
       if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); navLightbox(-1); }
     });
+
+    // Touch swipe for card galleries
+    document.querySelectorAll('[data-gallery]').forEach(gallery => {
+      let startX = 0, startY = 0, distX = 0;
+      gallery.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+      gallery.addEventListener('touchend', e => {
+        distX = e.changedTouches[0].clientX - startX;
+        const distY = e.changedTouches[0].clientY - startY;
+        if (Math.abs(distX) > 40 && Math.abs(distX) > Math.abs(distY)) {
+          const imgs = gallery.querySelectorAll('img');
+          const current = Array.from(imgs).findIndex(img => img.classList.contains('active'));
+          let next = distX < 0 ? current + 1 : current - 1;
+          if (next < 0) next = imgs.length - 1;
+          if (next >= imgs.length) next = 0;
+          goToSlide(gallery, next);
+        }
+      }, { passive: true });
+    });
+
+    // Touch swipe for lightbox
+    (function() {
+      const lb = document.getElementById('lightbox');
+      let startX = 0;
+      lb.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+      }, { passive: true });
+      lb.addEventListener('touchend', e => {
+        const distX = e.changedTouches[0].clientX - startX;
+        if (Math.abs(distX) > 50) {
+          navLightbox(distX < 0 ? 1 : -1);
+        }
+      }, { passive: true });
+    })();
 
     // Hero background slideshow
     (function() {

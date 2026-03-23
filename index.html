@@ -66,8 +66,8 @@
     }
 
     .hero-bg img.active { opacity: 1; }
-    .hero-bg img.zoom-in { animation: kenBurnsZoomIn 8s ease-in-out forwards; }
-    .hero-bg img.zoom-out { animation: kenBurnsZoomOut 8s ease-in-out forwards; }
+    .hero-bg img.zoom-in { animation: kenBurnsZoomIn 5s ease-in-out forwards; }
+    .hero-bg img.zoom-out { animation: kenBurnsZoomOut 5s ease-in-out forwards; }
 
     .hero::after {
       content: '';
@@ -997,7 +997,7 @@
         current = (current + 1) % bgImgs.length;
         zoomIn = !zoomIn;
         bgImgs[current].classList.add('active', zoomIn ? 'zoom-in' : 'zoom-out');
-      }, 7000);
+      }, 5000);
     })();
   </script>
 

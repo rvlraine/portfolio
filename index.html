@@ -800,18 +800,16 @@
 
       <article class="project-card">
         <div class="card-gallery" data-gallery>
-          <div class="gallery-track">
-            <img src="images/survey/survey-1.jpg" alt="Trimble Siteworks field data" loading="lazy">
-            <img src="images/survey/survey-2.jpg" alt="Survey team on site" loading="lazy">
-            <img src="images/survey/survey-3.jpg" alt="Trimble equipment setup" loading="lazy">
-            <img src="images/survey/survey-4.jpg" alt="Survey field work" loading="lazy">
-            <img src="images/survey/survey-5.jpg" alt="Trimble Earthworks" loading="lazy">
-            <img src="images/survey/survey-6.jpg" alt="SatLab equipment" loading="lazy">
-            <img src="images/survey/survey-7.jpg" alt="Field data collection" loading="lazy">
-          </div>
-          <button class="gallery-btn prev" onclick="navGallery(this,-1)">❮</button>
-          <button class="gallery-btn next" onclick="navGallery(this,1)">❯</button>
+          <img src="images/survey/survey-1.jpg" alt="Trimble Siteworks field data" class="active" onclick="openLightbox(this.src)">
+          <img src="images/survey/survey-2.jpg" alt="Survey team on site" onclick="openLightbox(this.src)">
+          <img src="images/survey/survey-3.jpg" alt="Trimble equipment setup" onclick="openLightbox(this.src)">
+          <img src="images/survey/survey-4.jpg" alt="Survey field work" onclick="openLightbox(this.src)">
+          <img src="images/survey/survey-5.jpg" alt="Trimble Earthworks" onclick="openLightbox(this.src)">
+          <img src="images/survey/survey-6.jpg" alt="SatLab equipment" onclick="openLightbox(this.src)">
+          <img src="images/survey/survey-7.jpg" alt="Field data collection" onclick="openLightbox(this.src)">
           <div class="gallery-dots"></div>
+          <button class="gallery-nav gallery-prev" onclick="navGallery(this,-1)">&#8249;</button>
+          <button class="gallery-nav gallery-next" onclick="navGallery(this,1)">&#8250;</button>
         </div>
         <div class="card-header">
           <h3>Survey Data Collection & Site Mapping Using Trimble & SatLab Equipment</h3>

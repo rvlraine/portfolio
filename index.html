@@ -44,6 +44,15 @@
       z-index: 0;
     }
 
+    @keyframes kenBurnsZoomIn {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.15); }
+    }
+    @keyframes kenBurnsZoomOut {
+      0% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
     .hero-bg img {
       position: absolute;
       top: 0;
@@ -53,9 +62,12 @@
       object-fit: cover;
       opacity: 0;
       transition: opacity 2s ease-in-out;
+      will-change: transform, opacity;
     }
 
     .hero-bg img.active { opacity: 1; }
+    .hero-bg img.zoom-in { animation: kenBurnsZoomIn 8s ease-in-out forwards; }
+    .hero-bg img.zoom-out { animation: kenBurnsZoomOut 8s ease-in-out forwards; }
 
     .hero::after {
       content: '';
@@ -972,16 +984,20 @@
       }, { passive: true });
     })();
 
-    // Hero background slideshow
+    // Hero background slideshow with Ken Burns zoom effect
     (function() {
       const bgImgs = document.querySelectorAll('.hero-bg img');
       if (bgImgs.length <= 1) return;
       let current = 0;
+      let zoomIn = true;
+      // Start first image with zoom-in
+      bgImgs[0].classList.add('zoom-in');
       setInterval(() => {
-        bgImgs[current].classList.remove('active');
+        bgImgs[current].classList.remove('active', 'zoom-in', 'zoom-out');
         current = (current + 1) % bgImgs.length;
-        bgImgs[current].classList.add('active');
-      }, 5000);
+        zoomIn = !zoomIn;
+        bgImgs[current].classList.add('active', zoomIn ? 'zoom-in' : 'zoom-out');
+      }, 7000);
     })();
   </script>
 

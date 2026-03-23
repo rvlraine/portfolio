@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lorraine Ann O. | Civil & Prompt Engineer Portfolio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #1a1a2e;
+      --accent: #e94560;
+      --accent-light: #ff6b81;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #2d2d2d;
+      --text-light: #6c757d;
+      --border: #e9ecef;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+      padding: 80px 24px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 70%, rgba(233,69,96,0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 30%, rgba(15,52,96,0.15) 0%, transparent 50%);
+      animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-20px, 10px); }
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero .tagline {
+      font-size: clamp(0.85rem, 2vw, 1.1rem);
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 24px;
+      font-weight: 300;
+      white-space: nowrap;
+    }
+
+    .hero .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+
+    .hero .stat { text-align: center; }
+    .hero .stat-value { font-size: 1.75rem; font-weight: 700; color: var(--accent-light); }
+    .hero .stat-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; }
+
+    .contact-bar {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .contact-bar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 24px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: var(--accent-light); transform: translateY(-2px); }
+
+    .btn-outline {
+      border: 1.5px solid rgba(255,255,255,0.4);
+      color: #fff;
+    }
+
+    .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* Section */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 12px;
+      color: var(--primary);
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-light);
+      margin-bottom: 48px;
+      font-size: 1rem;
+    }
+
+    /* Project Grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 28px;
+    }
+
+    .project-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+    }
+
+    /* Image Gallery */
+    .card-gallery {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+
+    .card-gallery img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .card-gallery img.active {
+      opacity: 1;
+    }
+
+    .gallery-dots {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 2;
+    }
+
+    .gallery-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      cursor: pointer;
+      border: none;
+      padding: 0;
+      transition: background 0.3s;
+    }
+
+    .gallery-dot.active {
+      background: #fff;
+    }
+
+    .gallery-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.35);
+      color: #fff;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card-gallery:hover .gallery-nav { opacity: 1; }
+
+    .gallery-prev { left: 8px; }
+    .gallery-next { right: 8px; }
+
+    .card-header {
+      padding: 20px 28px 0;
+    }
+
+    .card-header h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--primary);
+    }
+
+    .card-role {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .card-body {
+      padding: 0 28px 16px;
+      flex: 1;
+    }
+
+    .card-body p {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    .card-footer {
+      padding: 14px 28px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .skill-tag {
+      font-size: 0.72rem;
+      padding: 3px 10px;
+      border-radius: 50px;
+      background: #eef2ff;
+      color: #4f46e5;
+      font-weight: 500;
+    }
+
+    .card-date {
+      padding: 0 28px 14px;
+      font-size: 0.76rem;
+      color: var(--text-light);
+    }
+
+    /* Featured card */
+    .project-card.featured {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .project-card.featured .featured-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card.featured .card-header { padding: 28px 32px 0; }
+    .project-card.featured .card-body { padding: 0 32px 16px; }
+    .project-card.featured .card-footer { padding: 14px 32px; }
+    .project-card.featured .card-date { padding: 0 32px 16px; }
+
+    .featured-gallery {
+      position: relative;
+      overflow: hidden;
+      min-height: 320px;
+    }
+
+    .featured-gallery img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .featured-gallery img.active {
+      opacity: 1;
+    }
+
+    /* Skills section */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-category {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid var(--border);
+    }
+
+    .skill-category h4 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .skill-category ul { list-style: none; }
+
+    .skill-category li {
+      padding: 4px 0;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .skill-category li::before {
+      content: '\2022';
+      color: var(--accent);
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+    }
+
+    /* CTA */
+    .cta {
+      background: linear-gradient(135deg, var(--primary), #0f3460);
+      color: #fff;
+      text-align: center;
+      padding: 60px 24px;
+    }
+
+    .cta h2 { font-size: 1.75rem; margin-bottom: 12px; }
+    .cta p { opacity: 0.8; margin-bottom: 28px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.92);
+      z-index: 1000;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      cursor: zoom-out;
+    }
+
+    .lightbox.open { display: flex; align-items: flex-start; justify-content: center; }
+
+    .lightbox img {
+      max-width: 95%;
+      width: auto;
+      height: auto;
+      margin: 40px auto;
+      display: block;
+      border-radius: 8px;
+      cursor: default;
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      background: rgba(0,0,0,0.6);
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      z-index: 1002;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      font-size: 2.5rem;
+      cursor: pointer;
+      z-index: 1002;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+
+    .lightbox-nav:hover { background: rgba(255,255,255,0.3); }
+    .lightbox-prev { left: 16px; }
+    .lightbox-next { right: 16px; }
+
+    .lightbox-counter {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.7);
+      font-size: 0.85rem;
+      z-index: 1002;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .project-card.featured {
+        grid-template-columns: 1fr;
+      }
+      .featured-gallery { min-height: 220px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .hero .stats { gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-content">
+      <h1>LORRAINE ANN O. OLIVAR</h1>
+      <p class="tagline">Civil & Prompt Engineer | AutoCAD Drafter | Estimator-QS | Civil3D Modeler / AI-Assisted Developer</p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value">5+</div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">50+</div>
+          <div class="stat-label">Projects Completed</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">10+</div>
+          <div class="stat-label">Software Tools</div>
+        </div>
+      </div>
+
+      <div class="contact-bar">
+        <a href="https://www.upwork.com/freelancers/~01961dc2c6d7226318" class="btn-primary" target="_blank">Hire Me on Upwork</a>
+        <a href="mailto:olivarrain@gmail.com" class="btn-outline">Get in Touch</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Portfolio Projects -->
+  <section class="section">
+    <h2 class="section-title">Portfolio</h2>
+    <p class="section-subtitle">A selection of engineering, estimation, and AI-assisted development work</p>
+
+    <div class="projects-grid">
+
+      <!-- Featured: Precisely -->
+      <article class="project-card featured">
+        <div class="featured-left">
+          <div class="card-header">
+            <div class="card-role">Solo Developer</div>
+            <h3>Precisely &mdash; Estimating & Costing Web App</h3>
+          </div>
+          <div class="card-body">
+            <p>Designed and built a web-based estimating tool tailored for construction cost analysis. Precisely handles unit price breakdowns, material costing, and DUPA preparation &mdash; tasks performed daily across land development and road construction projects. Built the entire app solo using Claude AI as a development partner, from UI design to live deployment on Railway.</p>
+          </div>
+          <div class="card-footer">
+            <span class="skill-tag">Estimator</span>
+            <span class="skill-tag">Claude AI</span>
+            <span class="skill-tag">Web App Development</span>
+          </div>
+          <div class="card-date">Published Mar 16, 2026</div>
+        </div>
+        <div class="featured-gallery" data-gallery>
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/e39f8986-b6d3-4925-81e4-1f051e7092d6" alt="Precisely App - Screenshot 1" class="active" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/7798672e-cb33-455b-b019-aa11745f732b" alt="Precisely App - Screenshot 2" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/a7210408-ee3f-4386-89f8-519c668a2979" alt="Precisely App - Screenshot 3" onclick="openLightbox(this.src)">
+          <div class="gallery-dots"></div>
+          <button class="gallery-nav gallery-prev" onclick="navGallery(this,-1)">&#8249;</button>
+          <button class="gallery-nav gallery-next" onclick="navGallery(this,1)">&#8250;</button>
+        </div>
+      </article>
+
+      <!-- BOQ Samples & Take-Offs -->
+      <article class="project-card">
+        <div class="card-gallery" data-gallery>
+          <img src="images/boq-bpi.png" alt="BOQ - BPI Redevelopment Costing" class="active" onclick="openLightbox(this.src)">
+          <img src="images/boq-cyclone-fence.png" alt="BOQ - Cyclone Fence Take-Off" onclick="openLightbox(this.src)">
+          <img src="images/boq-bleachers.png" alt="BOQ - Natural Bleachers Estimate" onclick="openLightbox(this.src)">
+          <img src="images/boq-football-earthworks.png" alt="BOQ - Football Earthworks Volume" onclick="openLightbox(this.src)">
+          <img src="images/boq-lausanne.png" alt="BOQ - Lausanne Take-Off" onclick="openLightbox(this.src)">
+          <img src="images/boq-rw-rr-bria.png" alt="BOQ - RW and RR Take-Off Bria" onclick="openLightbox(this.src)">
+          <img src="images/boq-salawag.png" alt="BOQ - Salawag Cost" onclick="openLightbox(this.src)">
+          <img src="images/boq-somo.png" alt="BOQ - Somo Cost" onclick="openLightbox(this.src)">
+          <img src="images/boq-forresta.png" alt="BOQ - Forresta Cost" onclick="openLightbox(this.src)">
+          <div class="gallery-dots"></div>
+          <button class="gallery-nav gallery-prev" onclick="navGallery(this,-1)">&#8249;</button>
+          <button class="gallery-nav gallery-next" onclick="navGallery(this,1)">&#8250;</button>
+        </div>
+        <div class="card-header">
+          <div class="card-role">Estimator / Quantity Surveyor</div>
+          <h3>BOQ Samples &amp; Take-Offs</h3>
+        </div>
+        <div class="card-body">
+          <p>Collection of Bill of Quantities, cost estimates, and material take-offs for various civil and construction projects including redevelopment costing, earthworks volume computation, fencing, bleachers, and residential developments.</p>
+        </div>
+        <div class="card-footer">
+          <span class="skill-tag">Estimator</span>
+          <span class="skill-tag">BOQ</span>
+          <span class="skill-tag">Material Take-Off</span>
+          <span class="skill-tag">Cost Analysis</span>
+        </div>
+      </article>
+
+      <!-- AutoCAD Civil Engineering Drafter -->
+      <article class="project-card">
+        <div class="card-gallery" data-gallery>
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/8a42b2f6-045c-4a2e-b6fd-18524f2ad7cb" alt="AutoCAD Drafter - Pumping Station" class="active" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/3fea3a78-8a8c-4c6e-8d23-05c26f046e90" alt="AutoCAD Drafter - Drawing 2" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/8d5334ec-ab5f-4f2e-90c6-1e7d57618b15" alt="AutoCAD Drafter - Drawing 3" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/8232eafd-e4e8-4f3e-afcf-d892e68ed3e0" alt="AutoCAD Drafter - Drawing 4" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/27f60a25-6840-4c96-b831-b9f4b0b04f3a" alt="AutoCAD Drafter - Drawing 5" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/b419e96e-7eec-4124-a6e4-53546f6a2e3d" alt="AutoCAD Drafter - Drawing 6" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/b6d5574c-d752-4973-afd8-d814ee7a7cac" alt="AutoCAD Drafter - Drawing 7" onclick="openLightbox(this.src)">
+          <div class="gallery-dots"></div>
+          <button class="gallery-nav gallery-prev" onclick="navGallery(this,-1)">&#8249;</button>
+          <button class="gallery-nav gallery-next" onclick="navGallery(this,1)">&#8250;</button>
+        </div>
+        <div class="card-header">
+          <div class="card-role">Drafter / Designer</div>
+          <h3>AutoCAD Civil Engineering Drafter</h3>
+        </div>
+        <div class="card-body">
+          <p>Experienced in drafting and design support for civil, architectural, and construction-related projects. Producing precise CAD drawings, plan revisions, detailed layouts, and technical documentation based on project specifications while maintaining quality, clarity, and compliance with project standards.</p>
+        </div>
+        <div class="card-footer">
+          <span class="skill-tag">AutoCAD Civil 3D</span>
+          <span class="skill-tag">Autodesk AutoCAD</span>
+          <span class="skill-tag">Technical Design</span>
+        </div>
+        <div class="card-date">Published Mar 23, 2026</div>
+      </article>
+
+      <!-- Earthworks Calculation -->
+      <article class="project-card">
+        <div class="card-gallery" data-gallery>
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/1e2adc41-df8e-4ba2-ac9f-9310e3b4205a" alt="Earthworks - Surface Volume" class="active" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/4df60ffa-e627-4f88-9476-7aad47697622" alt="Earthworks - Section Views" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/3cf7b17c-ad31-492c-80e1-5fa6b8797686" alt="Earthworks - Section Volume" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/41b314f5-245d-4d0f-a79c-45bbc24086e6" alt="Earthworks - Retaining Wall" onclick="openLightbox(this.src)">
+          <div class="gallery-dots"></div>
+          <button class="gallery-nav gallery-prev" onclick="navGallery(this,-1)">&#8249;</button>
+          <button class="gallery-nav gallery-next" onclick="navGallery(this,1)">&#8250;</button>
+        </div>
+        <div class="card-header">
+          <div class="card-role">Quantity Surveyor</div>
+          <h3>Earthworks Calculation</h3>
+        </div>
+        <div class="card-body">
+          <p>Calculation of earthworks for residential and land development projects &mdash; site grading and civil plans were employed. This included topsoil stripping, cut and fill assessment, and the determination of surplus/deficit volumes for hauling or importing.</p>
+        </div>
+        <div class="card-footer">
+          <span class="skill-tag">AutoCAD Civil 3D</span>
+          <span class="skill-tag">BIM Quantity Takeoff</span>
+          <span class="skill-tag">Estimator</span>
+        </div>
+        <div class="card-date">Published Nov 22, 2025</div>
+      </article>
+
+      <!-- VBA Automation -->
+      <article class="project-card">
+        <div class="card-gallery" data-gallery>
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/70947ec0-0566-4e77-9ae8-17d8527f1b99" alt="VBA BOQ Automation" class="active" onclick="openLightbox(this.src)">
+          <div class="gallery-dots"></div>
+        </div>
+        <div class="card-header">
+          <div class="card-role">Estimator</div>
+          <h3>Automation on BOQ and Estimates using VBA Excel</h3>
+        </div>
+        <div class="card-body">
+          <p>Developed an Excel-based automation using VBA to simplify BOQ and cost estimate preparation. The tool automatically pulls data, matches items, calculates rates, and applies markups with a single click.</p>
+        </div>
+        <div class="card-footer">
+          <span class="skill-tag">Estimator</span>
+          <span class="skill-tag">Excel Macros</span>
+          <span class="skill-tag">Accuracy Verification</span>
+        </div>
+        <div class="card-date">Published Nov 2, 2025</div>
+      </article>
+
+      <!-- LiDAR Processing -->
+      <article class="project-card">
+        <div class="card-gallery" data-gallery>
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/5f78bc1e-48b6-4ac8-8478-2dbba42354ec" alt="LiDAR Processing 1" class="active" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/6f0061f0-2858-4866-a16a-4afe338cb79b" alt="LiDAR Processing 2" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/bae296cb-6645-42f6-9dba-c151140bd859" alt="LiDAR Processing 3" onclick="openLightbox(this.src)">
+          <div class="gallery-dots"></div>
+          <button class="gallery-nav gallery-prev" onclick="navGallery(this,-1)">&#8249;</button>
+          <button class="gallery-nav gallery-next" onclick="navGallery(this,1)">&#8250;</button>
+        </div>
+        <div class="card-header">
+          <div class="card-role">Data Processor / Project Engineer</div>
+          <h3>LiDAR Processing</h3>
+        </div>
+        <div class="card-body">
+          <p>Processed raw LiDAR datasets using SatLiDAR and transformed them into accurate geospatial products. Generated DTM, DSM, and DEM models with detailed 3D representations for engineering analysis.</p>
+        </div>
+        <div class="card-footer">
+          <span class="skill-tag">LiDAR</span>
+          <span class="skill-tag">Point Cloud to BIM</span>
+        </div>
+        <div class="card-date">Published Sep 1, 2025</div>
+      </article>
+
+      <!-- Photogrammetry -->
+      <article class="project-card">
+        <div class="card-gallery" data-gallery>
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/055f54a2-3594-4a30-a9dc-63becfbd9474" alt="Photogrammetry Processing 1" class="active" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/f342fb85-4d66-4cde-af5b-a74219ca5bb2" alt="Photogrammetry Processing 2" onclick="openLightbox(this.src)">
+          <div class="gallery-dots"></div>
+          <button class="gallery-nav gallery-prev" onclick="navGallery(this,-1)">&#8249;</button>
+          <button class="gallery-nav gallery-next" onclick="navGallery(this,1)">&#8250;</button>
+        </div>
+        <div class="card-header">
+          <div class="card-role">Photogrammetrist / Data Processor</div>
+          <h3>Photogrammetry Processing using Agisoft Metashape</h3>
+        </div>
+        <div class="card-body">
+          <p>Managed the full photogrammetry workflow to transform aerial images into accurate geospatial data. Processed drone imagery to generate orthomosaic maps, DEMs, and 3D models for visualization.</p>
+        </div>
+        <div class="card-footer">
+          <span class="skill-tag">Photogrammetry</span>
+          <span class="skill-tag">Technical Project Management</span>
+        </div>
+        <div class="card-date">Published Sep 1, 2025</div>
+      </article>
+
+      <!-- Civil 3D -->
+      <article class="project-card">
+        <div class="card-gallery" data-gallery>
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/4fa5aef6-46ec-46bb-999e-a9404e3d4a50" alt="Civil 3D - Model 1" class="active" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/6ae817b1-a603-47c1-b9c8-2b74bcff363d" alt="Civil 3D - Model 2" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/b4007a65-0e02-43f3-9bc0-f3c3ccef296d" alt="Civil 3D - Model 3" onclick="openLightbox(this.src)">
+          <div class="gallery-dots"></div>
+          <button class="gallery-nav gallery-prev" onclick="navGallery(this,-1)">&#8249;</button>
+          <button class="gallery-nav gallery-next" onclick="navGallery(this,1)">&#8250;</button>
+        </div>
+        <div class="card-header">
+          <div class="card-role">Design Modeler</div>
+          <h3>Civil 3D Design & Modeling</h3>
+        </div>
+        <div class="card-body">
+          <p>Used Autodesk Civil 3D to process survey, LiDAR, and orthomosaic data into digital terrain models, alignments, profiles, and corridor models. Deliverables included construction drawings, contour maps, and 3D visualizations.</p>
+        </div>
+        <div class="card-footer">
+          <span class="skill-tag">3D Modeling</span>
+          <span class="skill-tag">AutoCAD Civil 3D</span>
+        </div>
+        <div class="card-date">Published Sep 1, 2025</div>
+      </article>
+
+      <!-- 3D Model Machine Control -->
+      <article class="project-card">
+        <div class="card-gallery" data-gallery>
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/328f112d-315a-41dc-9d8a-e6faf9e89dea" alt="Machine Control - Football Field" class="active" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/f03953aa-57f2-4149-a27f-2df960ad9544" alt="Machine Control - Land Development" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/214976ef-9c3f-444f-9111-497f6be68deb" alt="Machine Control - Model 3" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/4b7a4b92-d291-42a3-82b5-2a0e968bf22f" alt="Machine Control - Model 4" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/55b27704-5281-4b7a-b755-47ca04062b6e" alt="Machine Control - Model 5" onclick="openLightbox(this.src)">
+          <img src="https://www.upwork.com/att/download/portfolio/persons/uid/1635655982379151360/profile/projects/files/e17d3b7b-97ac-45f1-9e2d-94bcb7d30d01" alt="Machine Control - Model 6" onclick="openLightbox(this.src)">
+          <div class="gallery-dots"></div>
+          <button class="gallery-nav gallery-prev" onclick="navGallery(this,-1)">&#8249;</button>
+          <button class="gallery-nav gallery-next" onclick="navGallery(this,1)">&#8250;</button>
+        </div>
+        <div class="card-header">
+          <div class="card-role">Project Engineer &mdash; 3D Modeller</div>
+          <h3>3D Model of Final Grade for Machine Control</h3>
+        </div>
+        <div class="card-body">
+          <p>Created a 3D model for final grade control of backhoe and bulldozer machines using Civil3D. Enhances earthwork precision by integrating final grade data for accurate terrain representation and real-time monitoring.</p>
+        </div>
+        <div class="card-footer">
+          <span class="skill-tag">3D Modeling</span>
+          <span class="skill-tag">AutoCAD Civil 3D</span>
+          <span class="skill-tag">Trimble Fleet Mgmt</span>
+          <span class="skill-tag">Project Management</span>
+        </div>
+        <div class="card-date">Published Aug 3, 2025</div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section class="section" style="background:#fff; padding-top:40px; padding-bottom:40px; max-width:100%;">
+    <div style="max-width:1100px; margin:0 auto; padding:0 24px;">
+      <h2 class="section-title">Skills & Tools</h2>
+      <p class="section-subtitle">Technologies and expertise across engineering and development</p>
+      <div class="skills-grid">
+        <div class="skill-category">
+          <h4>Design & Drafting</h4>
+          <ul>
+            <li>AutoCAD & Civil 3D</li>
+            <li>SketchUp</li>
+            <li>Lumion / Enscape</li>
+            <li>Bluebeam Revu</li>
+          </ul>
+        </div>
+        <div class="skill-category">
+          <h4>Estimation & Costing</h4>
+          <ul>
+            <li>Cost Estimation & Material Take-Offs</li>
+            <li>BOQ Development</li>
+            <li>BID Preparation</li>
+            <li>Planswift</li>
+          </ul>
+        </div>
+        <div class="skill-category">
+          <h4>Geospatial & Survey</h4>
+          <ul>
+            <li>LiDAR Processing</li>
+            <li>Drone Photogrammetry</li>
+            <li>Agisoft / Global Mapper</li>
+            <li>ArcGIS</li>
+          </ul>
+        </div>
+        <div class="skill-category">
+          <h4>Development & AI</h4>
+          <ul>
+            <li>Claude AI (App Development)</li>
+            <li>Excel VBA Automation</li>
+            <li>Web Application Development</li>
+            <li>MS Office / ClickUp</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Let's Work Together</h2>
+    <p>Share your project plans and requirements, and I'll deliver precise, professional, and purpose-driven outputs.</p>
+    <a href="https://www.upwork.com/freelancers/~01961dc2c6d7226318" class="btn-primary" target="_blank" style="display:inline-flex;">View Full Upwork Profile</a>
+  </section>
+
+  <footer class="footer">
+    &copy; 2026 LORRAINE ANN O. OLIVAR &mdash; All Rights Reserved
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <button class="lightbox-nav lightbox-prev" onclick="event.stopPropagation();navLightbox(-1)">&#8249;</button>
+    <img id="lightbox-img" src="" alt="Full size preview" onclick="event.stopPropagation()">
+    <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation();navLightbox(1)">&#8250;</button>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+  </div>
+
+  <script>
+    // Initialize galleries
+    document.querySelectorAll('[data-gallery]').forEach(gallery => {
+      const imgs = gallery.querySelectorAll('img');
+      const dotsContainer = gallery.querySelector('.gallery-dots');
+      if (!dotsContainer || imgs.length <= 1) return;
+
+      imgs.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+        dot.onclick = (e) => { e.stopPropagation(); goToSlide(gallery, i); };
+        dotsContainer.appendChild(dot);
+      });
+    });
+
+    function goToSlide(gallery, index) {
+      const imgs = gallery.querySelectorAll('img');
+      const dots = gallery.querySelectorAll('.gallery-dot');
+      imgs.forEach(img => img.classList.remove('active'));
+      dots.forEach(dot => dot.classList.remove('active'));
+      imgs[index].classList.add('active');
+      if (dots[index]) dots[index].classList.add('active');
+    }
+
+    function navGallery(btn, dir) {
+      event.stopPropagation();
+      const gallery = btn.closest('[data-gallery]');
+      const imgs = gallery.querySelectorAll('img');
+      const current = Array.from(imgs).findIndex(img => img.classList.contains('active'));
+      let next = current + dir;
+      if (next < 0) next = imgs.length - 1;
+      if (next >= imgs.length) next = 0;
+      goToSlide(gallery, next);
+    }
+
+    // Lightbox state
+    let lbImages = [];
+    let lbIndex = 0;
+
+    function openLightbox(src) {
+      event.stopPropagation();
+      // Find which gallery this image belongs to
+      const clickedImg = event.target;
+      const gallery = clickedImg.closest('[data-gallery]');
+      if (gallery) {
+        lbImages = Array.from(gallery.querySelectorAll('img')).map(img => img.src);
+        lbIndex = lbImages.indexOf(src);
+        if (lbIndex === -1) lbIndex = 0;
+      } else {
+        lbImages = [src];
+        lbIndex = 0;
+      }
+      showLightboxImage();
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function showLightboxImage() {
+      document.getElementById('lightbox-img').src = lbImages[lbIndex];
+      document.getElementById('lightbox-counter').textContent = (lbIndex + 1) + ' / ' + lbImages.length;
+      document.getElementById('lightbox').scrollTop = 0;
+    }
+
+    function navLightbox(dir) {
+      lbIndex += dir;
+      if (lbIndex < 0) lbIndex = lbImages.length - 1;
+      if (lbIndex >= lbImages.length) lbIndex = 0;
+      showLightboxImage();
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => {
+      const lb = document.getElementById('lightbox');
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); navLightbox(1); }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); navLightbox(-1); }
+    });
+  </script>
+
+</body>
+</html>

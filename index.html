@@ -44,9 +44,13 @@
       z-index: 0;
     }
 
-    @keyframes kenBurns {
+    @keyframes kenBurnsIn {
       0% { transform: scale(1.0); }
       100% { transform: scale(1.15); }
+    }
+    @keyframes kenBurnsOut {
+      0% { transform: scale(1.15); }
+      100% { transform: scale(1.0); }
     }
 
     .hero-bg img {
@@ -62,10 +66,9 @@
       will-change: transform, opacity;
     }
 
-    .hero-bg img.active {
-      opacity: 1;
-      animation: kenBurns 6s ease-out forwards;
-    }
+    .hero-bg img.active { opacity: 1; }
+    .hero-bg img.zoom-in { animation: kenBurnsIn 5s ease-out forwards; }
+    .hero-bg img.zoom-out { animation: kenBurnsOut 5s ease-out forwards; }
 
     .hero::after {
       content: '';
@@ -987,10 +990,20 @@
       const bgImgs = document.querySelectorAll('.hero-bg img');
       if (bgImgs.length <= 1) return;
       let current = 0;
+      let zoomIn = true;
+      bgImgs[0].classList.add('zoom-in');
       setInterval(() => {
-        bgImgs[current].classList.remove('active');
+        const prev = current;
         current = (current + 1) % bgImgs.length;
+        zoomIn = !zoomIn;
+        // Add zoom class before showing so animation starts with fade
+        bgImgs[current].classList.add(zoomIn ? 'zoom-in' : 'zoom-out');
         bgImgs[current].classList.add('active');
+        bgImgs[prev].classList.remove('active');
+        // Clean up previous after fade completes
+        setTimeout(() => {
+          bgImgs[prev].classList.remove('zoom-in', 'zoom-out');
+        }, 2000);
       }, 5000);
     })();
   </script>

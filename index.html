@@ -44,13 +44,10 @@
       z-index: 0;
     }
 
-    @keyframes kenBurnsZoomIn {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.15); }
-    }
-    @keyframes kenBurnsZoomOut {
-      0% { transform: scale(1.15); }
-      100% { transform: scale(1); }
+    @keyframes kenBurns {
+      0% { transform: scale(1.0); }
+      50% { transform: scale(1.12); }
+      100% { transform: scale(1.0); }
     }
 
     .hero-bg img {
@@ -62,12 +59,14 @@
       object-fit: cover;
       opacity: 0;
       transition: opacity 2s ease-in-out;
+      transform: scale(1);
       will-change: transform, opacity;
     }
 
-    .hero-bg img.active { opacity: 1; }
-    .hero-bg img.zoom-in { animation: kenBurnsZoomIn 5s ease-in-out forwards; }
-    .hero-bg img.zoom-out { animation: kenBurnsZoomOut 5s ease-in-out forwards; }
+    .hero-bg img.active {
+      opacity: 1;
+      animation: kenBurns 10s ease-in-out infinite;
+    }
 
     .hero::after {
       content: '';
@@ -989,14 +988,10 @@
       const bgImgs = document.querySelectorAll('.hero-bg img');
       if (bgImgs.length <= 1) return;
       let current = 0;
-      let zoomIn = true;
-      // Start first image with zoom-in
-      bgImgs[0].classList.add('zoom-in');
       setInterval(() => {
-        bgImgs[current].classList.remove('active', 'zoom-in', 'zoom-out');
+        bgImgs[current].classList.remove('active');
         current = (current + 1) % bgImgs.length;
-        zoomIn = !zoomIn;
-        bgImgs[current].classList.add('active', zoomIn ? 'zoom-in' : 'zoom-out');
+        bgImgs[current].classList.add('active');
       }, 5000);
     })();
   </script>
